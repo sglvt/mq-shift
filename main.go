@@ -7,5 +7,5 @@ import "github.com/sglv2/rmq-shift/publisher"
 // but using the wrapper API
 
 func main() {
-	publisher.GenerateData()
+	publisher.GenerateData("amqp://guest:guest@localhost:5672/")
 }
