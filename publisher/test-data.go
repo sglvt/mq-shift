@@ -15,7 +15,7 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func GenerateData(connection string) {
+func GenerateTestData(connection string) {
 	mq, err := rabbitmq.NewMQ(connection)
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer mq.Close()
