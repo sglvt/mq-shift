@@ -19,7 +19,13 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testDataHandler(w http.ResponseWriter, r *http.Request) {
-	publisher.GenerateTestData(getRMQConnectionString())
+	val := os.Getenv("RMQ_TEST_DATA")
+	if val == "enabled" {
+		publisher.GenerateTestData(getRMQConnectionString())
+		fmt.Fprintf(w, "Test data was generated")
+	} else {
+		fmt.Fprintf(w, "Test data was not generated, set  environment variable RMQ_TEST_DATA=enabled")
+	}
 }
 
 func handleRequests() {
