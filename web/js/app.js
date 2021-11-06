@@ -23,9 +23,8 @@ class Tab extends React.Component {
         <div>
           <a href="">Move</a>
         </div>
-        <div className="board-row">
+        <div className="message-row">
           {this.renderMessage("msg1")}
-          {this.renderMessage("msg2")}
         </div>
       </div>
     );
@@ -39,10 +38,8 @@ class App extends React.Component {
         <div className="tab">
           <Tab />
         </div>
-        <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
-        </div>
+        <nav style={styleSidebar}><br/>
+        </nav>
       </div>
     );
   }
