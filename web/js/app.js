@@ -25,6 +25,56 @@ class Tab extends React.Component {
   }
 }
 
+class RootPage extends React.Component {
+  renderMessage(s) {
+    return <Message value={s} />;
+  }
+
+  render() {
+
+    return (
+      <div>
+        <div className="message-row">
+          {this.renderMessage("Loaded the Root page")}
+        </div>
+      </div>
+    );
+  }
+}
+
+class FetchPage extends React.Component {
+  renderMessage(s) {
+    return <Message value={s} />;
+  }
+
+  render() {
+
+    return (
+      <div>
+        <div className="message-row">
+          {this.renderMessage("Loaded the Fetch page")}
+        </div>
+      </div>
+    );
+  }
+}
+
+class AppContent extends React.Component {
+  renderMessage(s) {
+    return <Message value={s} />;
+  }
+
+  render() {
+
+    return (
+      <ReactDOM.Switch>
+        <ReactDOM.Route exact path='/' component={RootPage} />
+        <ReactDOM.Route path='/fetch' component={FetchPage} />
+      </ReactDOM.Switch>
+    );
+  }
+}
+
 class App extends React.Component {
   render() {
     return (
@@ -49,7 +99,7 @@ class App extends React.Component {
                       </tr>
                       <tr>
                         <td style={styles.sidebarItem}>
-                          <a href="/">Move</a>
+                          <div id="move-button-container"></div>
                         </td>
                       </tr>
                     </tbody>
@@ -60,9 +110,7 @@ class App extends React.Component {
             {/* Content Area */}
             <tr>
               <td style={styles.content}>
-                <div className="tab">
-                  <Tab />
-                </div>
+                <div id="form-container"></div>
               </td>
             </tr>
           </tbody>
@@ -72,10 +120,48 @@ class App extends React.Component {
   }
 }
 
+class Form extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      name: ''
+    };
+  }
+
+  onChange(e) {
+    this.setState({
+      name: e.target.value
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <label form='name-input'>Name: </label>
+        <input
+          id='name-input'
+          onChange={this.onChange}
+          value={this.state.name} />
+        <br/>
+        <h3>{this.state.name}</h3>
+      </div>
+    )
+  }
+}
+
 // ========================================
 
-const ConfirmButtonContainer = document.querySelector('#app-container');
+const AppContainer = document.querySelector('#app-container');
 ReactDOM.render(
   <App />,
-  ConfirmButtonContainer
+  AppContainer
+);
+
+const FormContainer = document.querySelector('#form-container');
+ReactDOM.render(
+  <Form />,
+  FormContainer
 );
