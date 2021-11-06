@@ -17,12 +17,6 @@ class Tab extends React.Component {
 
     return (
       <div>
-        <div>
-          <a href="">Get</a>
-        </div>
-        <div>
-          <a href="">Move</a>
-        </div>
         <div className="message-row">
           {this.renderMessage("msg1")}
         </div>
@@ -35,11 +29,44 @@ class App extends React.Component {
   render() {
     return (
       <div className="app">
-        <div className="tab">
-          <Tab />
-        </div>
-        <nav style={styleSidebar}><br/>
-        </nav>
+        <table>
+          <tbody>
+            {/* Navigation Sidebar */}
+            <tr>
+              <td>
+                <nav style={styles.sidebar}>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td style={styles.sidebarItem}>
+                          <a href="/">Overview</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={styles.sidebarItem}>
+                          <a href="/">Fetch</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={styles.sidebarItem}>
+                          <a href="/">Move</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </nav>
+              </td>
+            </tr>
+            {/* Content Area */}
+            <tr>
+              <td style={styles.content}>
+                <div className="tab">
+                  <Tab />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   }

@@ -30,32 +30,7 @@ hr { border: 0px; border: 1px solid #eee; }
 
 blockquote { color:rgb(71, 71, 77); font-style: italic;}
 
-.content {
-  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-  line-height: 1.5em;
-  font-size: 1.1em;
-  position: relative;
-  margin-left: 400px;
-  margin-right: 100px;
-  overscroll-behavior-y: none;
-}
-
-.sidebar{
-  height:100%;
-  width:200px;
-  background-color:#1f3044;
-  position:fixed;
-  color:#fff;
-}
-
-.sidebarItem {
-  color:#7ed5ea;
-  padding:8px 16px;
-  display:block;
-  text-decoration: none;
-}
-
-.sidebarItem:hover {
+td:hover {
   color:#28559a;
   background-color: rgb(255, 255, 255);
   width:200px;
