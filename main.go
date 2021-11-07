@@ -8,23 +8,25 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/sglv2/rmq-shift/publisher"
+	"github.com/sglv2/mq-shift/publisher"
 )
 
 var port int
-var rmqUser, rmqPassword, rmqHost, rmqPort string
+var mqType, mqProtocol, mqUser, mqPassword, mqHost, mqPort string
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "in progress")
 }
 
 func testDataHandler(w http.ResponseWriter, r *http.Request) {
-	val := os.Getenv("RMQ_TEST_DATA")
+	val := os.Getenv("MQ_TEST_DATA")
 	if val == "enabled" {
-		publisher.GenerateTestData(getRMQConnectionString())
-		fmt.Fprintf(w, "Test data was generated")
+		if mqType == "rabbitmq" {
+			publisher.GenerateRabbitMQTestData(getMQConnectionString())
+			fmt.Fprintf(w, "Test data was generated")
+		}
 	} else {
-		fmt.Fprintf(w, "Test data was not generated, set  environment variable RMQ_TEST_DATA=enabled")
+		fmt.Fprintf(w, "Test data was not generated, set  environment variable MQ_TEST_DATA=enabled")
 	}
 }
 
@@ -54,15 +56,21 @@ func getStringEnvVar(envVar string) string {
 	return val
 }
 
-func getRMQConnectionString() string {
-	return fmt.Sprintf("amqp://%v:%v@%v:%v", rmqUser, rmqPassword, rmqHost, rmqPort)
+func getMQConnectionString() string {
+	return fmt.Sprintf("%v://%v:%v@%v:%v", mqProtocol, mqUser, mqPassword, mqHost, mqPort)
+}
+
+func initialize() {
+	port = getIntEnvVar("MQ_SHIFT_PORT")
+	mqType = getStringEnvVar("MQ_TYPE")
+	mqProtocol = getStringEnvVar("MQ_PROTOCOL")
+	mqUser = getStringEnvVar("MQ_USER")
+	mqPassword = getStringEnvVar("MQ_PASSWORD")
+	mqHost = getStringEnvVar("MQ_HOST")
+	mqPort = getStringEnvVar("MQ_PORT")
 }
 
 func main() {
-	port = getIntEnvVar("RMQ_SHIFT_PORT")
-	rmqUser = getStringEnvVar("RMQ_USER")
-	rmqPassword = getStringEnvVar("RMQ_PASSWORD")
-	rmqHost = getStringEnvVar("RMQ_HOST")
-	rmqPort = getStringEnvVar("RMQ_PORT")
+	initialize()
 	handleRequests()
 }

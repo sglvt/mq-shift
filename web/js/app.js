@@ -76,6 +76,12 @@ class AppContent extends React.Component {
 }
 
 class App extends React.Component {
+  page = "default";
+  constructor(props) {
+    super(props);
+  }
+
+
   render() {
     return (
       <div className="app">
@@ -110,7 +116,7 @@ class App extends React.Component {
             {/* Content Area */}
             <tr>
               <td style={styles.content}>
-                <div id="form-container"></div>
+                <div id="content-container"></div>
               </td>
             </tr>
           </tbody>
@@ -145,7 +151,7 @@ class Form extends React.Component {
           id='name-input'
           onChange={this.onChange}
           value={this.state.name} />
-        <br/>
+        <br />
         <h3>{this.state.name}</h3>
       </div>
     )
@@ -160,7 +166,7 @@ ReactDOM.render(
   AppContainer
 );
 
-const FormContainer = document.querySelector('#form-container');
+const FormContainer = document.querySelector('#content-container');
 ReactDOM.render(
   <Form />,
   FormContainer
