@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import {
   Link
 } from "react-router-dom";
-import styles from '../styles.js'
+
+function mouseOver(e) {
+  e.target.style.color = 'red';
+}
+
+function mouseOut(e) {
+  e.target.style.color = '#fff';
+}
 
 class Navitem extends Component {
 
@@ -12,13 +19,10 @@ class Navitem extends Component {
         <Link
           style={{
             color: '#fff',
-            "&:hover": {
-              color: "#efefef",
-              backgroundColor: "#efefef",
-              textDecoration: "bold"
-            },
             textDecoration: 'none', marginLeft: '2em'
           }}
+          onMouseOver={mouseOver}
+          onMouseOut={mouseOut}
           to={this.props.tolink} onClick={this.props.activec.bind(this, this.props.item)}>{this.props.item}
         </Link>
 
