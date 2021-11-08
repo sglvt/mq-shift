@@ -1,9 +1,7 @@
 const styles = {
 
   sidebar: {
-    height: '100%',
-    width: '200px',
-    left: '0px',
+    padding: '100px 100px',
     backgroundColor: '#1f3044',
     position: 'fixed',
     color: '#fffff'
@@ -11,11 +9,15 @@ const styles = {
 
   sidebarItem: {
     color: '#7ed5ea',
-    padding: '8px 16px',
+    padding: '16px 16px',
+    marginLeft: '30px',
     display: 'block',
     textDecoration: 'none',
     textColor: '#c73305',
-    backgroundcolor: '#000'
+    backgroundColor: '#ddd',
+    "&:hover": {
+      backgroundColor: '#aaaaaa',
+    }
   },
 
   content: {

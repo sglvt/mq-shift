@@ -36,30 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.sidebar {
-  height: '100%';
-  width: '200px';
-  left: '0px';
-  background-color: '#1f3044';
-  position: 'fixed';
-  color: '#fffff'
-}
-
-.sidebar-item {
-  color: '#7ed5ea';
-  padding: '8px 16px';
-  display: 'block';
-  text-decoration: 'none';
-  background-color: '#000';
-  text-align: left;
-}
-
-.content {
-  height: '100%';
-  width: '100%';
-  background-color: '#ffffff';
-  position: 'fixed';
-  left: '210px';
-  color: '#ffffff'
-}
