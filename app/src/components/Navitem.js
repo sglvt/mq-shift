@@ -5,10 +5,12 @@ import {
 
 function mouseOver(e) {
   e.target.style.color = 'red';
+  e.target.style.background = '#fff';
 }
 
 function mouseOut(e) {
   e.target.style.color = '#fff';
+  e.target.style.background = '#1f3044';
 }
 
 class Navitem extends Component {
@@ -19,7 +21,10 @@ class Navitem extends Component {
         <Link
           style={{
             color: '#fff',
-            textDecoration: 'none', marginLeft: '2em'
+            align: 'centered',
+            verticalAlign: 'centered',
+            textDecoration: 'none', 
+            padding: '0.7em 0.7em 0.5em 0.5em'
           }}
           onMouseOver={mouseOver}
           onMouseOut={mouseOut}
