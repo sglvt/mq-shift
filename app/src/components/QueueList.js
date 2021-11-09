@@ -13,15 +13,12 @@ const queueList = [
   }
 ]
 
-export default function filterQueue(searchText, maxResults) {
+export default function filterQueues(searchText, maxResults) {
   return queueList
     .filter(queue => {
       if (queue.queueName.toLowerCase().includes(searchText.toLowerCase())) {
         return true;
       }
-      // if (queue.keywords.includes(searchText)) {
-      //   return true;
-      // }
       return false;
     })
     .slice(0, maxResults);

@@ -7,7 +7,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import FetchPage from "./components/FetchPage";
+import FetchPage from "./components/FetchPagev2";
 
 ReactDOM.render(
   <React.StrictMode>
