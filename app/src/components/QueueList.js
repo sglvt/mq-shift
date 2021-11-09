@@ -9,7 +9,7 @@ const queueList = [
     "queueName": "dlq"
   },
   {
-    "queueName": "messages",
+    "queueName": "messages"
   }
 ]
 

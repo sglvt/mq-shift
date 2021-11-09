@@ -16,7 +16,7 @@ ReactDOM.render(
         <Route path="/" element={<App />} />
         <Route path="fetch" element={<FetchPage />} />
       </Routes>
-    </BrowserRouter>,
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

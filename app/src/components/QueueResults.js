@@ -18,11 +18,14 @@ export default class QueueResults extends PureComponent {
   render() {
     return (
       <div>
-        {this.props.queueData.map(queueData => (
-          <QueueResultRow
-            queueName={queueData.queueName}
-          />
-        ))}
+        <select name="queues" multiple style={{height:"30em", width:"20em"}}>
+          {this.props.queueData.map(queueData => (
+            <QueueResultRow
+              queueName={queueData.queueName}
+              key={queueData.queueName}
+            />
+          ))}
+        </select>
       </div>
     );
   }

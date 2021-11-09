@@ -8,9 +8,20 @@ export default class QueueResultsRow extends PureComponent {
 
   render() {
     return (
-      <div>
-        <h3>{this.props.queueName}</h3>
-      </div>
+      // <div>
+        <option
+          // style={{
+          //   color: '#ccccc',
+          //   align: 'centered',
+          //   verticalAlign: 'centered',
+          //   textDecoration: 'none', 
+          //   padding: '0.7em 0.7em 0.5em 0.5em',
+          //   backgroundColor: '#000000',
+          //   width: '10em'
+
+          // }}
+        >{this.props.queueName}</option>
+      // </div>
     );
   }
 }
