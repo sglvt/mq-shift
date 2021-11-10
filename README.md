@@ -8,8 +8,11 @@ curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
 npx create-react-app app
 cd app
-npm start
-npm install react-router-dom react-select
+sudo npm install -g yarn
+yarn install
+sudo npm install -g yarn
+yarn set version latest
+yarn add react-router-dom react-select
 ```
 
 #### Running the app
