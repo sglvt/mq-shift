@@ -65,7 +65,7 @@ function FetchPage() {
             <tr>
               <td>
                 <label for="quantity">Quantity (between 1 and 10): </label>
-                <input type="number" id="quantity" name="quantity" min="1" max="10" value="1"></input>
+                <input type="number" id="quantity" name="quantity" min="1" max="10"></input>
               </td>
             </tr>
             <tr>
