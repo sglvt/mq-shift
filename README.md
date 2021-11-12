@@ -6,18 +6,18 @@
 ```
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
-npx create-react-app app
-cd app
 sudo npm install -g yarn
 yarn install
 sudo npm install -g yarn
 yarn set version latest
-yarn add react-router-dom react-select
+yarn add react-router-dom react-select create-react-app
+yarn create-react-app web
 ```
 
 #### Running the app
 ```
-npm start
+cd web
+yarn start
 ```
 
 ### API
@@ -42,15 +42,16 @@ export MQ_TYPE=rabbitmq
 export MQ_USER=guest
 export MQ_PASSWORD=guest
 export MQ_HOST=127.0.0.1
-export MQ_API_PROTOCOL=amqp
+export MQ_PROTOCOL=amqp
 export MQ_PORT=5672
 export MQ_API_PROTOCOL=http
 export MQ_API_PORT=15672
+export FLASK_PORT=8080
 ```
 
 Start the application
 ```
 FLASK_APP=api.py \
 FLASK_ENV=development \
-flask run -p 8080
+flask run -p ${FLASK_PORT}
 ```
