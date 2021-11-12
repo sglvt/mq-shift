@@ -31,10 +31,26 @@ pip install flask pika urllib3
 pip freeze > requirements.txt
 ```
 #### Running the application
+Start RabbitMQ
 ```
 docker run -d --name rmq --restart -p 5672:5672 -p 15672:15672 rabbitmq:3.7.0-management
+```
 
+Set env vars
+```
+export MQ_TYPE=rabbitmq
+export MQ_USER=guest
+export MQ_PASSWORD=guest
+export MQ_HOST=127.0.0.1
+export MQ_API_PROTOCOL=amqp
+export MQ_PORT=5672
+export MQ_API_PROTOCOL=http
+export MQ_API_PORT=15672
+```
+
+Start the application
+```
 FLASK_APP=api.py \
 FLASK_ENV=development \
-flask run
+flask run -p 8080
 ```
