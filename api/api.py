@@ -39,8 +39,8 @@ def root():
     </table>
     '''
 
-@app.route('/fetch')
-def fetch():
+@app.route('/queue-list')
+def queueList():
     resp = http.request('GET', f'{mqApiProtocol}://{mqHost}:{mqApiPort}/api/queues',headers=headers)
     queue_list = []
     data = json.loads(resp.data)
@@ -49,3 +49,8 @@ def fetch():
         queue_list.append(data[i]['name'])
     print(queue_list)
     return json.dumps(queue_list)
+
+@app.after_request
+def after_request(response):
+    response.headers["Access-Control-Allow-Origin"] = "*" # http://localhost
+    return response

@@ -2,33 +2,53 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import Navbar from './Navbar';
 
+// async function getQueueList() {
+//   var response = await fetch("http://localhost:8080/queue-list")
+//   console.log(response);
+// }
+
+const getQueueList = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/queue-list', {mode:'cors'});
+    const data = await response.json();
+    console.log({ data })
+  }
+  catch (e) {
+    console.log(e)
+  }
+}
+
 function FetchPage() {
-  const data = [
-    {
-      value: 1,
-      label: "orange"
-    },
-    {
-      value: 2,
-      label: "fuchsia"
-    },
-    {
-      value: 3,
-      label: "red"
-    },
-    {
-      value: 4,
-      label: "aqua"
-    },
-    {
-      value: 5,
-      label: "purple"
-    },
-    {
-      value: 6,
-      label: "turquoise"
-    }
-  ];
+  
+  var data = ["turqoise", "orange"]
+  // var data = [
+  //   {
+  //     value: 1,
+  //     label: "orange"
+  //   },
+  //   {
+  //     value: 2,
+  //     label: "fuchsia"
+  //   },
+  //   {
+  //     value: 3,
+  //     label: "red"
+  //   },
+  //   {
+  //     value: 4,
+  //     label: "aqua"
+  //   },
+  //   {
+  //     value: 5,
+  //     label: "purple"
+  //   },
+  //   {
+  //     value: 6,
+  //     label: "turquoise"
+  //   }
+  // ];
+
+  // data = getQueueList()
 
   // set value for default selection
   const [selectedValue, setSelectedValue] = useState(1);
@@ -51,7 +71,8 @@ function FetchPage() {
                 <div style={{ width: "20em" }}>
                   <Select
                     placeholder="Select Option"
-                    value={data.find(obj => obj.value === selectedValue)} // set selected value
+                    // value={data.find(obj => obj.value === selectedValue)} // set selected value
+                    value={data.find(obj => obj === selectedValue)}
                     options={data}
                     onChange={handleChange}
                     className="selectQueue"
@@ -59,7 +80,7 @@ function FetchPage() {
                 </div>
               </td>
               <td>
-                <p>{data[selectedValue-1].label}</p>
+                <p>{data[selectedValue-1]}</p>
               </td>
             </tr>
             <tr>

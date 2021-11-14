@@ -10,7 +10,7 @@ sudo npm install -g yarn
 yarn install
 sudo npm install -g yarn
 yarn set version latest
-yarn add react-router-dom react-select create-react-app
+yarn add axios react-router-dom react-select create-react-app
 yarn create-react-app web
 ```
 
