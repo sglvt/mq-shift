@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import jsonify
 import json
 import os
 import traceback
@@ -48,7 +49,7 @@ def queueList():
     for i in range(len(data)):
         queue_list.append(data[i]['name'])
     print(queue_list)
-    return json.dumps(queue_list)
+    return jsonify(queue_list)
 
 @app.after_request
 def after_request(response):
