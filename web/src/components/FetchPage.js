@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 
-export default class App extends Component {
+export default class FetchPage extends Component {
 
   constructor(props){
     super(props)
