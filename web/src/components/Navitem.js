@@ -24,7 +24,9 @@ class Navitem extends Component {
             align: 'centered',
             verticalAlign: 'centered',
             textDecoration: 'none', 
-            padding: '0.7em 0.7em 0.5em 0.5em'
+            padding: '1vmin 1vmin 1vmin 1vmin',
+            fontSize: 'calc(10px + 1.5vmin)',
+            fontFamily: 'Arial, Helvetica, sans-serif'
           }}
           onMouseOver={mouseOver}
           onMouseOut={mouseOut}

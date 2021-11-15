@@ -21,7 +21,7 @@ class Navbar extends Component {
       <nav style={{hwidth: '100%',left: '0em', top: '0em', backgroundColor: '#1f3044'}}>
         <table>
           <tbody>
-            <tr style={{height: '3em',width: '100%',left: '0em', top: '0em', backgroundColor: '#1f3044'}}>
+            <tr style={{height: 'calc(10px + 5vmin)',width: '100%',left: '0em', top: '0em', backgroundColor: '#1f3044'}}>
               <Navitem item="Home" tolink="/" activec={this.activeitem}></Navitem>
               <Navitem item="Fetch" tolink="/fetch" activec={this.activeitem} ></Navitem>
             </tr>
