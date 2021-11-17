@@ -1,7 +1,7 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, request
 import json
 import os
+import pika
 import traceback
 import urllib3
 
@@ -45,11 +45,30 @@ def queueList():
     resp = http.request('GET', f'{mqApiProtocol}://{mqHost}:{mqApiPort}/api/queues',headers=headers)
     queue_list = []
     data = json.loads(resp.data)
-    print(data)
     for i in range(len(data)):
         queue_list.append(data[i]['name'])
     print(queue_list)
     return jsonify(queue_list)
+
+@app.route('/insert-message', methods=['POST'])
+def insertMessage():
+    # data = request['message']
+    print(request.form['message'])
+    # credentials = pika.PlainCredentials(mqUser, mqPassword)
+    # parameters = pika.ConnectionParameters('rabbit-server1',
+    #                                     mqPort,
+    #                                     '/',
+    #                                     credentials)
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
+
+    # channel = connection.channel()
+    # channel.queue_bind(queue='q1', exchange='amq.direct')
+    # channel.basic_publish(exchange='amq.direct',
+    #                   routing_key='q1',
+    #                   body=jsonify(data))
+    # connection.close()
+    # return jsonify(data)
+    return 'OK'
 
 @app.after_request
 def after_request(response):
