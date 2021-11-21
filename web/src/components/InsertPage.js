@@ -47,12 +47,13 @@ export default class InsertPage extends Component {
     console.log(this.state.message)
     let formData = new FormData(); 
     formData.append('message', this.state.message)
+    formData.append('queueName', this.state.queueName)
     axios.post('http://localhost:8080/insert-message', formData, config)
-    // .then(response => {
-    //   return response.data;
-    // }).catch(error => {
-    //   return error;
-    // });
+    .then(response => {
+      return response.data;
+    }).catch(error => {
+      return error;
+    });
   }
 
   componentDidMount() {

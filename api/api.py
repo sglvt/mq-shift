@@ -52,23 +52,23 @@ def queueList():
 
 @app.route('/insert-message', methods=['POST'])
 def insertMessage():
-    # data = request['message']
-    print(request.form['message'])
-    # credentials = pika.PlainCredentials(mqUser, mqPassword)
-    # parameters = pika.ConnectionParameters('rabbit-server1',
-    #                                     mqPort,
-    #                                     '/',
-    #                                     credentials)
-    # connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
+    data = request.form['message']
+    queueName = request.form['queueName']
+    print(data)
+    credentials = pika.PlainCredentials(mqUser, mqPassword)
+    parameters = pika.ConnectionParameters(host=mqHost,
+                                        port=mqPort,
+                                        virtual_host='/',
+                                        credentials=credentials)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
 
-    # channel = connection.channel()
-    # channel.queue_bind(queue='q1', exchange='amq.direct')
-    # channel.basic_publish(exchange='amq.direct',
-    #                   routing_key='q1',
-    #                   body=jsonify(data))
-    # connection.close()
-    # return jsonify(data)
-    return 'OK'
+    channel = connection.channel()
+    channel.queue_declare(queue=queueName, durable=True)
+    channel.basic_publish(exchange='',
+                      routing_key=queueName,
+                      body=data)
+    connection.close()
+    return data
 
 @app.after_request
 def after_request(response):
