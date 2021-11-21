@@ -64,7 +64,6 @@ export default class InsertPage extends Component {
     console.log(this.state.selectOptions)
     return (
       <div>
-        <form>
           <div>
             <Navbar />
           </div>
@@ -111,7 +110,6 @@ export default class InsertPage extends Component {
               />
             </div>
           </div>
-        </form>
       </div>
     )
   }
