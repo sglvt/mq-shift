@@ -46,7 +46,10 @@ def queueList():
     queue_list = []
     data = json.loads(resp.data)
     for i in range(len(data)):
-        queue_list.append(data[i]['name'])
+        queue={}
+        queue['name'] = data[i]['name']
+        queue['durable'] = str(data[i]['durable'])
+        queue_list.append(queue)
     print(queue_list)
     return jsonify(queue_list)
 
@@ -54,7 +57,7 @@ def queueList():
 def insertMessage():
     data = request.form['message']
     queueName = request.form['queueName']
-    print(data)
+    durable = request.form['durable']
     credentials = pika.PlainCredentials(mqUser, mqPassword)
     parameters = pika.ConnectionParameters(host=mqHost,
                                         port=mqPort,

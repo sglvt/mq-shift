@@ -10,6 +10,7 @@ export default class InsertPage extends Component {
     super(props)
     this.state = {
       selectOptions: [],
+      queueAttributes: [],
       queueName: '',
       message: ''
     }
@@ -20,18 +21,27 @@ export default class InsertPage extends Component {
     const data = res.data
 
     const options = data.map(d => ({
-      "value": d,
-      "label": d
-
+      "value": d.name,
+      "label": d.name
     }))
 
+    let attributes = {}
+    console.log(data)
+    for (let k in Object.keys(data)) {
+      console.log(`${data[k]['name']} ${data[k]['durable']}`)
+      attributes[data[k]['name']] = {}
+      attributes[data[k]['name']]['durable'] = data[k]['durable']
+    }
+
     this.setState({ selectOptions: options })
+    this.setState({ queueAttributes: attributes })
 
   }
 
   handleQueueChange(e) {
     console.log(e)
     this.setState({ queueName: e.label })
+    // this.setState({ durable: selectOptions[e.label] })
   }
 
   handleMessageChange(e) {
@@ -48,6 +58,7 @@ export default class InsertPage extends Component {
     let formData = new FormData(); 
     formData.append('message', this.state.message)
     formData.append('queueName', this.state.queueName)
+    formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
     axios.post('http://localhost:8080/insert-message', formData, config)
     .then(response => {
       return response.data;
