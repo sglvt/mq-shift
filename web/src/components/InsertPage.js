@@ -94,7 +94,7 @@ export default class InsertPage extends Component {
               <tbody>
                 <tr>
                   <td>
-                    <p>Queue</p>
+                    <p className="regular-text">Queue</p>
                   </td>
                   <td>
                     <div style={{ width: "50vmin" }}>

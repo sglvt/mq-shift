@@ -33,3 +33,17 @@
 .orange-button:active {
   opacity: .5;
 }
+
+.control-bar {
+  left: '0vmin';
+  top: '0vmin';
+  background-color: '#99ccff';
+  font-size: 'calc(10px + 1vmin)';
+}
+
+p {
+  font-family: sans-serif;
+  font-size: calc(9px + 1vmin);
+  color:darkslategrey;
+}
+

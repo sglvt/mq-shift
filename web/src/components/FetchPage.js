@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 import Navbar from './Navbar';
+import './page.css';
 
 export default class FetchPage extends Component {
 
@@ -51,7 +52,7 @@ export default class FetchPage extends Component {
           <Navbar />
         </div>
         <div style={{fontFamily: 'Arial, Helvetica, sans-serif'}}>
-          <div style={{ left: '0vmin', top: '0vmin', backgroundColor: '#d27979', fontSize: 'calc(10px + 1vmin)' }}>
+          <div style={{ left: '0vmin', top: '0vmin', backgroundColor: '#99ccff', fontSize: 'calc(9px + 1vmin)' }}>
             <table>
               <tbody>
                 <tr>
