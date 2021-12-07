@@ -66,12 +66,48 @@ def insertMessage():
     connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
 
     channel = connection.channel()
-    channel.queue_declare(queue=queueName, durable=True)
+    channel.queue_declare(queue=queueName, durable=durable)
     channel.basic_publish(exchange='',
                       routing_key=queueName,
                       body=data)
     connection.close()
     return data
+
+@app.route('/get-messages', methods=['POST'])
+def getMessages():
+    queueName = request.form['queueName']
+    durable = request.form['durable']
+    credentials = pika.PlainCredentials(mqUser, mqPassword)
+    parameters = pika.ConnectionParameters(host=mqHost,
+                                        port=mqPort,
+                                        virtual_host='/',
+                                        credentials=credentials)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
+
+    channel = connection.channel()
+    channel.queue_declare(queue=queueName, durable=durable)
+    for method_frame, properties, body in channel.consume(queue=queueName):
+
+        # Display the message parts
+        print(method_frame)
+        print(properties)
+        print(body)
+
+        # Acknowledge the message
+        channel.basic_ack(method_frame.delivery_tag)
+
+        # Escape out of the loop after 10 messages
+        if method_frame.delivery_tag == 1:
+            break
+
+    # Cancel the consumer and return any pending messages
+    requeued_messages = channel.cancel()
+    print('Requeued %i messages' % requeued_messages)
+
+    # Close the channel and the connection
+    channel.close()
+    connection.close()
+    return "OK"
 
 @app.after_request
 def after_request(response):

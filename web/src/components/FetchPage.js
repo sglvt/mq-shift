@@ -12,7 +12,9 @@ export default class FetchPage extends Component {
     this.state = {
       selectOptions: [],
       queueName: '',
-      quantity: 1
+      quantity: 1,
+      message: '',
+      response: ''
     }
   }
 
@@ -38,6 +40,11 @@ export default class FetchPage extends Component {
 
   }
 
+  getTimestamp(){
+    let now = new Date();
+    return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+  }
+
   handleQueueChange(e) {
     console.log(e)
     this.setState({ queueName: e.label })
@@ -50,6 +57,28 @@ export default class FetchPage extends Component {
 
   handleButtonClick(e) {
     console.log(e)
+    let config = {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    console.log(this.state.message)
+    let formData = new FormData();
+    try {
+      formData.append('count', this.state.quantity)
+      formData.append('queueName', this.state.queueName)
+      formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
+      axios.post('http://localhost:8080/get-messages', formData, config)
+        .then(response => {
+          this.setState({ response: `successfully retrieved messages at ${this.getTimestamp()}` })
+          return response.data;
+        }).catch(error => {
+          this.setState({ response: `error "${error}" at ${this.getTimestamp()}` })
+          return error;
+        });
+    }
+    catch (err) {
+      console.log(err)
+      this.setState({ response: `error "${err}" at ${this.getTimestamp()}` })
+    }
   }
 
   componentDidMount() {
@@ -63,7 +92,7 @@ export default class FetchPage extends Component {
         <div>
           <Navbar />
         </div>
-        <div style={{fontFamily: 'Arial, Helvetica, sans-serif'}}>
+        <div style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
           <div style={{ left: '0vmin', top: '0vmin', backgroundColor: '#99ccff', fontSize: 'calc(10px + 1vmin)' }}>
             <table>
               <tbody>
@@ -75,18 +104,18 @@ export default class FetchPage extends Component {
                     <div style={{ width: "50vmin" }}>
                       <Select
                         className="select"
-                        id="queue" 
+                        id="queue"
                         options={this.state.selectOptions}
-                        onChange={this.handleQueueChange.bind(this)} 
+                        onChange={this.handleQueueChange.bind(this)}
                       />
                     </div>
                   </td>
                   <td>
-                    <div style={{width: '2vmin'}}></div>
+                    <div style={{ width: '2vmin' }}></div>
                   </td>
                   <td>
                     <label for="quantity" className="numeric-input">Number of messages: </label>
-                    <input type="number" className="numeric-input" 
+                    <input type="number" className="numeric-input"
                       id="quantity"
                       name="quantity"
                       min="1" max="100"
@@ -95,7 +124,7 @@ export default class FetchPage extends Component {
                     </input>
                   </td>
                   <td>
-                    <div style={{width: '2vmin'}}></div>
+                    <div style={{ width: '2vmin' }}></div>
                   </td>
                   <td>
                     <button className="orange-button"
@@ -103,13 +132,16 @@ export default class FetchPage extends Component {
                     >Retrieve messages</button>
                   </td>
                 </tr>
+                <tr><td>
+                  <p>{this.state.response}</p>
+                </td></tr>
               </tbody>
             </table>
           </div>
           <div>
             <textarea style={{ height: '100%', width: '100%', left: '0em', top: '0em' }}
               value={this.state.queueName + ' ' + this.state.quantity}
-              readonly
+              readOnly
               rows={50}
               cols={100}
             />

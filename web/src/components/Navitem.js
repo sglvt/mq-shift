@@ -25,7 +25,7 @@ class Navitem extends Component {
             verticalAlign: 'centered',
             textDecoration: 'none', 
             padding: '1vmin 1vmin 1vmin 1vmin',
-            fontSize: 'calc(10px + 1.5vmin)',
+            fontSize: 'calc(10px + 1vmin)',
             fontFamily: 'Arial, Helvetica, sans-serif'
           }}
           onMouseOver={mouseOver}
