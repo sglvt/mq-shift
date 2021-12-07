@@ -21,12 +21,20 @@ export default class FetchPage extends Component {
     const data = res.data
 
     const options = data.map(d => ({
-      "value": d,
-      "label": d
-
+      "value": d.name,
+      "label": d.name
     }))
 
+    let attributes = {}
+    console.log(data)
+    for (let k in Object.keys(data)) {
+      console.log(`${data[k]['name']} ${data[k]['durable']}`)
+      attributes[data[k]['name']] = {}
+      attributes[data[k]['name']]['durable'] = data[k]['durable']
+    }
+
     this.setState({ selectOptions: options })
+    this.setState({ queueAttributes: attributes })
 
   }
 
@@ -38,6 +46,10 @@ export default class FetchPage extends Component {
   handleQuantityChange(e) {
     console.log(e)
     this.setState({ quantity: e.target.value })
+  }
+
+  handleButtonClick(e) {
+    console.log(e)
   }
 
   componentDidMount() {
@@ -52,23 +64,43 @@ export default class FetchPage extends Component {
           <Navbar />
         </div>
         <div style={{fontFamily: 'Arial, Helvetica, sans-serif'}}>
-          <div style={{ left: '0vmin', top: '0vmin', backgroundColor: '#99ccff', fontSize: 'calc(9px + 1vmin)' }}>
+          <div style={{ left: '0vmin', top: '0vmin', backgroundColor: '#99ccff', fontSize: 'calc(10px + 1vmin)' }}>
             <table>
               <tbody>
                 <tr>
                   <td>
+                    <p className="regular-text">Queue</p>
+                  </td>
+                  <td>
                     <div style={{ width: "50vmin" }}>
-                      <Select id="queue" options={this.state.selectOptions} onChange={this.handleQueueChange.bind(this)} />
+                      <Select
+                        className="select"
+                        id="queue" 
+                        options={this.state.selectOptions}
+                        onChange={this.handleQueueChange.bind(this)} 
+                      />
                     </div>
                   </td>
                   <td>
-                    <label for="quantity" style={{ paddingLeft: '2vmin' }}>Number of messages: </label>
-                    <input type="number" id="quantity" name="quantity" min="1" max="100" placeholder="1" style={{ fontSize: 'calc(10px + 2vmin)' }} onChange={this.handleQuantityChange.bind(this)}></input>
+                    <div style={{width: '2vmin'}}></div>
                   </td>
-                </tr>
-                <tr>
                   <td>
-                    <div><p>Selected Queue: {this.state.queueName}</p></div>
+                    <label for="quantity" className="numeric-input">Number of messages: </label>
+                    <input type="number" className="numeric-input" 
+                      id="quantity"
+                      name="quantity"
+                      min="1" max="100"
+                      placeholder="1"
+                      onChange={this.handleQuantityChange.bind(this)}>
+                    </input>
+                  </td>
+                  <td>
+                    <div style={{width: '2vmin'}}></div>
+                  </td>
+                  <td>
+                    <button className="orange-button"
+                      onClick={this.handleButtonClick.bind(this)}
+                    >Retrieve messages</button>
                   </td>
                 </tr>
               </tbody>

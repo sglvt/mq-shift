@@ -98,13 +98,17 @@ export default class InsertPage extends Component {
                   </td>
                   <td>
                     <div style={{ width: "50vmin" }}>
-                      <Select id="queue" options={this.state.selectOptions} onChange={this.handleQueueChange.bind(this)} />
+                      <Select
+                        className="select"
+                        id="queue"
+                        options={this.state.selectOptions}
+                        onChange={this.handleQueueChange.bind(this)} 
+                      />
                     </div>
                   </td>
                   <td>
                     <button className="orange-button"
                       onClick={this.handleButtonClick.bind(this)}
-
                     >Insert message</button>
                   </td>
                 </tr>
