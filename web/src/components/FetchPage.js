@@ -13,8 +13,8 @@ export default class FetchPage extends Component {
       selectOptions: [],
       queueName: '',
       quantity: 1,
-      message: '',
-      response: ''
+      data: [],
+      status: ''
     }
   }
 
@@ -60,7 +60,6 @@ export default class FetchPage extends Component {
     let config = {
       headers: { 'Content-Type': 'multipart/form-data' }
     }
-    console.log(this.state.message)
     let formData = new FormData();
     try {
       formData.append('count', this.state.quantity)
@@ -68,16 +67,19 @@ export default class FetchPage extends Component {
       formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
       axios.post('http://localhost:8080/get-messages', formData, config)
         .then(response => {
-          this.setState({ response: `successfully retrieved messages at ${this.getTimestamp()}` })
-          return response.data;
+          this.setState({ status: `successfully retrieved messages at ${this.getTimestamp()}` })
+          this.state.data = response.data
+          console.log(`data=${this.state.data}`)
+          return response;
         }).catch(error => {
-          this.setState({ response: `error "${error}" at ${this.getTimestamp()}` })
+          this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
+          console.log(error)
           return error;
         });
     }
     catch (err) {
       console.log(err)
-      this.setState({ response: `error "${err}" at ${this.getTimestamp()}` })
+      this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
     }
   }
 
@@ -114,7 +116,7 @@ export default class FetchPage extends Component {
                     <div style={{ width: '2vmin' }}></div>
                   </td>
                   <td>
-                    <label for="quantity" className="numeric-input">Number of messages: </label>
+                    <label className="numeric-input">Number of messages: </label>
                     <input type="number" className="numeric-input"
                       id="quantity"
                       name="quantity"
@@ -133,14 +135,14 @@ export default class FetchPage extends Component {
                   </td>
                 </tr>
                 <tr><td>
-                  <p>{this.state.response}</p>
+                  <p>{this.state.status}</p>
                 </td></tr>
               </tbody>
             </table>
           </div>
           <div>
             <textarea style={{ height: '100%', width: '100%', left: '0em', top: '0em' }}
-              value={this.state.queueName + ' ' + this.state.quantity}
+              value={this.state.data[0]}
               readOnly
               rows={50}
               cols={100}

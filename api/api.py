@@ -63,7 +63,7 @@ def insertMessage():
                                         port=mqPort,
                                         virtual_host='/',
                                         credentials=credentials)
-    connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
+    connection = pika.BlockingConnection(parameters=parameters)
 
     channel = connection.channel()
     channel.queue_declare(queue=queueName, durable=durable)
@@ -82,32 +82,33 @@ def getMessages():
                                         port=mqPort,
                                         virtual_host='/',
                                         credentials=credentials)
-    connection = pika.BlockingConnection(pika.ConnectionParameters(mqHost))
+    connection = pika.BlockingConnection(parameters=parameters)
 
     channel = connection.channel()
     channel.queue_declare(queue=queueName, durable=durable)
+    data = []
     for method_frame, properties, body in channel.consume(queue=queueName):
 
         # Display the message parts
         print(method_frame)
         print(properties)
         print(body)
-
+        data.append(body.decode("utf-8") )
         # Acknowledge the message
         channel.basic_ack(method_frame.delivery_tag)
 
-        # Escape out of the loop after 10 messages
+        # Escape out of the loop after 1 messages
         if method_frame.delivery_tag == 1:
             break
 
     # Cancel the consumer and return any pending messages
-    requeued_messages = channel.cancel()
-    print('Requeued %i messages' % requeued_messages)
+    # requeued_messages = channel.cancel()
+    # print('Requeued %i messages' % requeued_messages)
 
     # Close the channel and the connection
     channel.close()
     connection.close()
-    return "OK"
+    return jsonify(data)
 
 @app.after_request
 def after_request(response):
