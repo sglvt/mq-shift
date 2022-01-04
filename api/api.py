@@ -111,7 +111,10 @@ def getMessages():
     # Close the channel and the connection
     channel.close()
     connection.close()
-    return jsonify(data)
+    # jsonified_data=jsonify({'data': data})
+    jsonified_data=jsonify(data)
+    print(f'jsonified_data={jsonified_data}')
+    return jsonified_data
 
 @app.after_request
 def after_request(response):

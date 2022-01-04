@@ -70,7 +70,7 @@ export default class FetchPage extends Component {
         .then(response => {
           this.setState({ status: `successfully retrieved messages at ${this.getTimestamp()}` })
           this.setState({ data: response.data})
-          console.log(`data=${this.state.data}`)
+          console.log(`this.state.data=${this.state.data}`)
           return response;
         }).catch(error => {
           this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
@@ -143,10 +143,10 @@ export default class FetchPage extends Component {
           </div>
           <div>
 
-      {this.state.data.map(message => (
+      {this.state.data.map((message,index) => (
         <textarea style={{ width: '100%', left: '10em', top: '10em' }}
-          key={message}
-          value={this.state.data}
+          key={index}
+          value={message}
           readOnly
           rows={3}
           cols={100}
