@@ -64,6 +64,7 @@ export default class FetchPage extends Component {
     try {
       formData.append('count', this.state.quantity)
       formData.append('queueName', this.state.queueName)
+      this.setState({ data: []})
       formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
       axios.post('http://localhost:8080/get-messages', formData, config)
         .then(response => {
@@ -143,9 +144,13 @@ export default class FetchPage extends Component {
           <div>
 
       {this.state.data.map(message => (
-        <li>
-          {message}
-        </li>
+        <textarea style={{ width: '100%', left: '10em', top: '10em' }}
+          key={message}
+          value={this.state.data}
+          readOnly
+          rows={3}
+          cols={100}
+          />
       ))}
 
           </div>
