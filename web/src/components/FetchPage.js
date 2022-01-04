@@ -68,7 +68,7 @@ export default class FetchPage extends Component {
       axios.post('http://localhost:8080/get-messages', formData, config)
         .then(response => {
           this.setState({ status: `successfully retrieved messages at ${this.getTimestamp()}` })
-          this.state.data = response.data
+          this.setState({ data: response.data})
           console.log(`data=${this.state.data}`)
           return response;
         }).catch(error => {
@@ -141,12 +141,13 @@ export default class FetchPage extends Component {
             </table>
           </div>
           <div>
-            <textarea style={{ height: '100%', width: '100%', left: '0em', top: '0em' }}
-              value={this.state.data[0]}
-              readOnly
-              rows={50}
-              cols={100}
-            />
+
+      {this.state.data.map(message => (
+        <li>
+          {message}
+        </li>
+      ))}
+
           </div>
         </div>
       </div>

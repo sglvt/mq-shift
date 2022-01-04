@@ -77,6 +77,8 @@ def insertMessage():
 def getMessages():
     queueName = request.form['queueName']
     durable = request.form['durable']
+    desiredCount = int(request.form['count'])
+    print(f'queueName={queueName} durable={durable} count={desiredCount}')
     credentials = pika.PlainCredentials(mqUser, mqPassword)
     parameters = pika.ConnectionParameters(host=mqHost,
                                         port=mqPort,
@@ -87,6 +89,7 @@ def getMessages():
     channel = connection.channel()
     channel.queue_declare(queue=queueName, durable=durable)
     data = []
+    currentCount = 0
     for method_frame, properties, body in channel.consume(queue=queueName):
 
         # Display the message parts
@@ -96,9 +99,9 @@ def getMessages():
         data.append(body.decode("utf-8") )
         # Acknowledge the message
         channel.basic_ack(method_frame.delivery_tag)
-
+        currentCount+=1
         # Escape out of the loop after 1 messages
-        if method_frame.delivery_tag == 1:
+        if currentCount >= desiredCount:
             break
 
     # Cancel the consumer and return any pending messages
