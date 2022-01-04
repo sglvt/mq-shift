@@ -87,26 +87,32 @@ def getMessages():
     connection = pika.BlockingConnection(parameters=parameters)
 
     channel = connection.channel()
-    channel.queue_declare(queue=queueName, durable=durable)
+    queue = channel.queue_declare(queue=queueName, durable=durable)
     data = []
     currentCount = 0
-    for method_frame, properties, body in channel.consume(queue=queueName):
+    if queue.method.message_count > 0:
+        for method_frame, properties, body in channel.consume(queue=queueName):
 
-        # Display the message parts
-        print(method_frame)
-        print(properties)
-        print(body)
-        data.append(body.decode("utf-8") )
-        # Acknowledge the message
-        channel.basic_ack(method_frame.delivery_tag)
-        currentCount+=1
-        # Escape out of the loop after 1 messages
-        if currentCount >= desiredCount:
-            break
+            # Display the message parts
+            print(method_frame)
+            print(properties)
+            print(body)
+            data.append(body.decode("utf-8") )
+            # Acknowledge the message
+            channel.basic_ack(method_frame.delivery_tag)
+            currentCount+=1
+            # Escape out of the loop after 1 messages
+            if currentCount >= desiredCount:
+                break
+
+            # If queue is empty
+            print(f'queue.method.message_count={queue.method.message_count}')
+            if queue.method.message_count == 0:
+                break
 
     # Cancel the consumer and return any pending messages
-    # requeued_messages = channel.cancel()
-    # print('Requeued %i messages' % requeued_messages)
+    requeued_messages = channel.cancel()
+    print('Requeued %i messages' % requeued_messages)
 
     # Close the channel and the connection
     channel.close()
