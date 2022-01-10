@@ -106,7 +106,11 @@ export default class FetchPage extends Component {
           <Navbar />
         </div>
         <div style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
-          <div style={{ left: '0vmin', top: '0vmin', backgroundColor: '#99ccff', fontSize: 'calc(10px + 1vmin)' }}>
+          <div style={{ left: '0vmin', 
+            top: '0vmin', 
+            backgroundColor: '#99ccff',
+            fontSize: 'calc(10px + 1vmin)',
+            fontWeight: 'bold' }}>
             <table>
               <tbody>
                 <tr>
@@ -145,13 +149,13 @@ export default class FetchPage extends Component {
                     >Retrieve messages</button>
                   </td>
                 </tr>
-                <tr><td>
-                  <p>{this.state.status}</p>
-                </td></tr>
               </tbody>
             </table>
           </div>
           <div>
+            <p
+              style={{ color: '#003366', fontSize: 'calc(9px+1vmin)', fontWeight: 'normal' }}
+            >{this.state.status}</p>
 
             {this.state.data.map((message, index) => (
               <textarea style={{ width: '100%', left: '10em', top: '10em' }}
