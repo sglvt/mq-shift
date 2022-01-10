@@ -14,7 +14,7 @@ export default class InsertPage extends Component {
       queueAttributes: [],
       queueName: '',
       message: '',
-      response: ''
+      status: ''
     }
   }
 
@@ -52,28 +52,33 @@ export default class InsertPage extends Component {
   }
 
   handleButtonClick(e) {
-    console.log(e)
-    let config = {
-      headers: { 'Content-Type': 'multipart/form-data' }
+    if (this.state.queueName != '') {
+      console.log(e)
+      let config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }
+      console.log(this.state.message)
+      let formData = new FormData();
+      let now = new Date();
+      try {
+        formData.append('message', this.state.message)
+        formData.append('queueName', this.state.queueName)
+        formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
+        axios.post('http://localhost:8080/insert-message', formData, config)
+          .then(response => {
+            this.setState({ status: `successfully inserted at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
+            return response.data;
+          }).catch(error => {
+            return error;
+          });
+      }
+      catch (err) {
+        console.log(err)
+        this.setState({ status: `error "${err}" at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
+      }
     }
-    console.log(this.state.message)
-    let formData = new FormData();
-    let now = new Date();
-    try {
-      formData.append('message', this.state.message)
-      formData.append('queueName', this.state.queueName)
-      formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
-      axios.post('http://localhost:8080/insert-message', formData, config)
-        .then(response => {
-          this.setState({ response: `successfully inserted at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
-          return response.data;
-        }).catch(error => {
-          return error;
-        });
-    }
-    catch(err) {
-      console.log(err)
-      this.setState({ response: `error "${err}" at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
+    else {
+      this.setState({ status: `error: no queue selected` })
     }
   }
 
@@ -102,7 +107,7 @@ export default class InsertPage extends Component {
                         className="select"
                         id="queue"
                         options={this.state.selectOptions}
-                        onChange={this.handleQueueChange.bind(this)} 
+                        onChange={this.handleQueueChange.bind(this)}
                       />
                     </div>
                   </td>
@@ -116,11 +121,11 @@ export default class InsertPage extends Component {
             </table>
           </div>
           <div>
-            <p>{this.state.response}</p>
+            <p>{this.state.status}</p>
             <textarea
               name='message'
-              style={{ height: '100%', width: '100%', left: '0em', top: '0em' }}
-              rows={50}
+              style={{ width: '100%', left: '10em', top: '10em' }}
+              rows={10}
               cols={100}
               onChange={this.handleMessageChange.bind(this)}
             />

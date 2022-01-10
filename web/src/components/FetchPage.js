@@ -40,7 +40,7 @@ export default class FetchPage extends Component {
 
   }
 
-  getTimestamp(){
+  getTimestamp() {
     let now = new Date();
     return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
   }
@@ -56,31 +56,41 @@ export default class FetchPage extends Component {
   }
 
   handleButtonClick(e) {
-    console.log(e)
-    let config = {
-      headers: { 'Content-Type': 'multipart/form-data' }
+    if (this.state.queueName != '') {
+      console.log(e)
+      let config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }
+      let formData = new FormData();
+      try {
+        formData.append('count', this.state.quantity)
+        formData.append('queueName', this.state.queueName)
+        this.setState({ data: [] })
+        formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
+        axios.post('http://localhost:8080/get-messages', formData, config)
+          .then(response => {
+            if (response.data.length == 0) {
+              this.setState({ status: `queue is empty` })
+            }
+            else {
+              this.setState({ status: `successfully retrieved ${response.data.length} messages at ${this.getTimestamp()}` })
+            }
+            this.setState({ data: response.data })
+            console.log(`this.state.data=${this.state.data}`)
+            return response;
+          }).catch(error => {
+            this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
+            console.log(error)
+            return error;
+          });
+      }
+      catch (err) {
+        console.log(err)
+        this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
+      }
     }
-    let formData = new FormData();
-    try {
-      formData.append('count', this.state.quantity)
-      formData.append('queueName', this.state.queueName)
-      this.setState({ data: []})
-      formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
-      axios.post('http://localhost:8080/get-messages', formData, config)
-        .then(response => {
-          this.setState({ status: `successfully retrieved messages at ${this.getTimestamp()}` })
-          this.setState({ data: response.data})
-          console.log(`this.state.data=${this.state.data}`)
-          return response;
-        }).catch(error => {
-          this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
-          console.log(error)
-          return error;
-        });
-    }
-    catch (err) {
-      console.log(err)
-      this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
+    else {
+      this.setState({ status: `error: no queue selected` })
     }
   }
 
@@ -143,15 +153,15 @@ export default class FetchPage extends Component {
           </div>
           <div>
 
-      {this.state.data.map((message,index) => (
-        <textarea style={{ width: '100%', left: '10em', top: '10em' }}
-          key={index}
-          value={message}
-          readOnly
-          rows={3}
-          cols={100}
-          />
-      ))}
+            {this.state.data.map((message, index) => (
+              <textarea style={{ width: '100%', left: '10em', top: '10em' }}
+                key={index}
+                value={message}
+                readOnly
+                rows={3}
+                cols={100}
+              />
+            ))}
 
           </div>
         </div>

@@ -107,7 +107,7 @@ def getMessages():
 
             # If queue is empty
             print(f'queue.method.message_count={queue.method.message_count}')
-            if queue.method.message_count == 0:
+            if queue.method.message_count == currentCount:
                 break
 
     # Cancel the consumer and return any pending messages
