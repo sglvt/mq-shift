@@ -56,7 +56,7 @@ export default class FetchPage extends Component {
   }
 
   handleButtonClick(e) {
-    if (this.state.queueName != '') {
+    if (this.state.queueName !== '') {
       console.log(e)
       let config = {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -69,7 +69,7 @@ export default class FetchPage extends Component {
         formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
         axios.post('http://localhost:8080/get-messages', formData, config)
           .then(response => {
-            if (response.data.length == 0) {
+            if (response.data.length === 0) {
               this.setState({ status: `queue is empty` })
             }
             else {

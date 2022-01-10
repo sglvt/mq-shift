@@ -52,7 +52,7 @@ export default class InsertPage extends Component {
   }
 
   handleButtonClick(e) {
-    if (this.state.queueName != '') {
+    if (this.state.queueName !== '') {
       console.log(e)
       let config = {
         headers: { 'Content-Type': 'multipart/form-data' }
