@@ -78,7 +78,8 @@ def getMessages():
     queueName = request.form['queueName']
     durable = request.form['durable']
     desiredCount = int(request.form['count'])
-    print(f'queueName={queueName} durable={durable} count={desiredCount}')
+    acknowledge = request.form['acknowledge'] == 'True'
+    print(f'queueName={queueName} durable={durable} count={desiredCount} acknowledge={acknowledge}')
     credentials = pika.PlainCredentials(mqUser, mqPassword)
     parameters = pika.ConnectionParameters(host=mqHost,
                                         port=mqPort,
@@ -99,7 +100,8 @@ def getMessages():
             print(body)
             data.append(body.decode("utf-8") )
             # Acknowledge the message
-            channel.basic_ack(method_frame.delivery_tag)
+            if (acknowledge):
+                channel.basic_ack(method_frame.delivery_tag)
             currentCount+=1
             # Escape out of the loop after 1 messages
             if currentCount >= desiredCount:

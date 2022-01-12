@@ -14,7 +14,8 @@ export default class FetchPage extends Component {
       queueName: '',
       quantity: 1,
       data: [],
-      status: ''
+      status: '',
+      acknowledge: true
     }
   }
 
@@ -55,6 +56,12 @@ export default class FetchPage extends Component {
     this.setState({ quantity: e.target.value })
   }
 
+  handleAcknowledgeCheckbox(e) {
+    console.log(e)
+    let ack = ! (this.state.acknowledge)
+    this.setState({ acknowledge: ack })
+  }
+
   handleButtonClick(e) {
     if (this.state.queueName !== '') {
       console.log(e)
@@ -65,6 +72,8 @@ export default class FetchPage extends Component {
       try {
         formData.append('count', this.state.quantity)
         formData.append('queueName', this.state.queueName)
+        let ack = (this.state.acknowledge === true)? 'True':'False'
+        formData.append('acknowledge', ack)
         this.setState({ data: [] })
         formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
         axios.post('http://localhost:8080/get-messages', formData, config)
@@ -97,6 +106,8 @@ export default class FetchPage extends Component {
   componentDidMount() {
     this.getOptions()
   }
+
+  
 
   render() {
     console.log(this.state.selectOptions)
@@ -147,6 +158,15 @@ export default class FetchPage extends Component {
                     <button className="orange-button"
                       onClick={this.handleButtonClick.bind(this)}
                     >Retrieve messages</button>
+                  </td>
+                  <td>
+                  <input type="checkbox" name="acknowledge"
+                    checked={this.state.acknowledge}
+                    onChange={this.handleAcknowledgeCheckbox.bind(this)}
+                  />
+                  <label for="acknowledge"
+                      className="regular-text"
+                  > Acknowledge</label>
                   </td>
                 </tr>
               </tbody>
