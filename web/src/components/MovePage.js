@@ -11,7 +11,8 @@ export default class FetchPage extends Component {
     super(props)
     this.state = {
       selectOptions: [],
-      queueName: '',
+      sourceQueueName: '',
+      destQueueName: '',
       quantity: 1,
       data: [],
       status: '',
@@ -46,9 +47,14 @@ export default class FetchPage extends Component {
     return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
   }
 
-  handleQueueChange(e) {
+  handleSourceQueueChange(e) {
     console.log(e)
-    this.setState({ queueName: e.label })
+    this.setState({ sourceQueueName: e.label })
+  }
+
+  handleDestQueueChange(e) {
+    console.log(e)
+    this.setState({ destQueueName: e.label })
   }
 
   handleQuantityChange(e) {
@@ -63,7 +69,7 @@ export default class FetchPage extends Component {
   }
 
   handleButtonClick(e) {
-    if (this.state.queueName !== '') {
+    if (this.state.sourceQueueName !== '') {
       console.log(e)
       let config = {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -71,12 +77,13 @@ export default class FetchPage extends Component {
       let formData = new FormData();
       try {
         formData.append('count', this.state.quantity)
-        formData.append('queueName', this.state.queueName)
+        formData.append('sourceQueueName', this.state.sourceQueueName)
+        formData.append('destQueueName', this.state.destQueueName)
         let ack = (this.state.acknowledge === true)? 'True':'False'
         formData.append('acknowledge', ack)
         this.setState({ data: [] })
-        formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
-        axios.post('http://localhost:8080/get-messages', formData, config)
+        formData.append('durable', this.state.queueAttributes[this.state.sourceQueueName]['durable'])
+        axios.post('http://localhost:8080/move-messages', formData, config)
           .then(response => {
             if (response.data.length === 0) {
               this.setState({ status: `queue is empty` })
@@ -134,7 +141,20 @@ export default class FetchPage extends Component {
                         className="select"
                         id="queue"
                         options={this.state.selectOptions}
-                        onChange={this.handleQueueChange.bind(this)}
+                        onChange={this.handleSourceQueueChange.bind(this)}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <p className="regular-text">Dest. Queue</p>
+                  </td>
+                  <td>
+                    <div style={{ width: "50vmin" }}>
+                      <Select
+                        className="select"
+                        id="destQueue"
+                        options={this.state.selectOptions}
+                        onChange={this.handleDestQueueChange.bind(this)}
                       />
                     </div>
                   </td>
@@ -157,7 +177,7 @@ export default class FetchPage extends Component {
                   <td>
                     <button className="orange-button"
                       onClick={this.handleButtonClick.bind(this)}
-                    >Fetch</button>
+                    >Move</button>
                   </td>
                   <td>
                   <input type="checkbox" name="acknowledge"

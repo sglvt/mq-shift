@@ -124,7 +124,63 @@ def getMessages():
     print(f'jsonified_data={jsonified_data}')
     return jsonified_data
 
+
+@app.route('/move-messages', methods=['POST'])
+def moveMessages():
+    sourceQueueName = request.form['sourceQueueName']
+    destQueueName = request.form['destQueueName']
+    durable = request.form['durable']
+    desiredCount = int(request.form['count'])
+    acknowledge = request.form['acknowledge'] == 'True'
+    print(f'queueName={sourceQueueName} durable={durable} count={desiredCount} acknowledge={acknowledge}')
+    credentials = pika.PlainCredentials(mqUser, mqPassword)
+    parameters = pika.ConnectionParameters(host=mqHost,
+                                        port=mqPort,
+                                        virtual_host='/',
+                                        credentials=credentials)
+    connection = pika.BlockingConnection(parameters=parameters)
+
+    channel = connection.channel()
+    sourceQueue = channel.queue_declare(queue=sourceQueueName, durable=durable)
+    data = []
+    currentCount = 0
+    if sourceQueue.method.message_count > 0:
+        for method_frame, properties, body in channel.consume(queue=sourceQueueName):
+
+            # Display the message parts
+            print(method_frame)
+            print(properties)
+            print(body)
+            channel.basic_publish(exchange='',
+                    routing_key=destQueueName,
+                    body=body)
+            data.append(body.decode("utf-8") )
+            # Acknowledge the message
+            if (acknowledge):
+                channel.basic_ack(method_frame.delivery_tag)
+            currentCount+=1
+            # Escape out of the loop after 1 messages
+            if currentCount >= desiredCount:
+                break
+
+            # If queue is empty
+            print(f'queue.method.message_count={sourceQueue.method.message_count}')
+            if sourceQueue.method.message_count == currentCount:
+                break
+
+    # Cancel the consumer and return any pending messages
+    requeued_messages = channel.cancel()
+    print('Requeued %i messages' % requeued_messages)
+
+    # Close the channel and the connection
+    channel.close()
+    connection.close()
+    # jsonified_data=jsonify({'data': data})
+    jsonified_data=jsonify(data)
+    print(f'jsonified_data={jsonified_data}')
+    return jsonified_data
+
 @app.after_request
 def after_request(response):
-    response.headers["Access-Control-Allow-Origin"] = "*" # http://localhost
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000" # 
     return response

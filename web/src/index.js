@@ -8,6 +8,7 @@ import {
   Route
 } from "react-router-dom";
 import FetchPage from "./components/FetchPage";
+import MovePage from "./components/MovePage";
 import InsertPage from "./components/InsertPage";
 
 ReactDOM.render(
@@ -16,6 +17,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="fetch" element={<FetchPage />} />
+        <Route path="move" element={<MovePage />} />
         <Route path="insert" element={<InsertPage />} />
       </Routes>
     </BrowserRouter>
