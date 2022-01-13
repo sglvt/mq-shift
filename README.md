@@ -55,3 +55,8 @@ FLASK_APP=api.py \
 FLASK_ENV=development \
 flask run -p ${FLASK_PORT}
 ```
+
+## Container images
+```
+podman build -f Dockerfile.web . -t mq-shift-web
+```

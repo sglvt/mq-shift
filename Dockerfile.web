@@ -1,0 +1,12 @@
+FROM public.ecr.aws/docker/library/node:16.13.2-alpine3.15
+RUN mkdir -p /web
+WORKDIR /
+COPY web /web
+COPY package.json /
+RUN yarn install
+
+WORKDIR /web
+RUN    yarn run build && \
+    yarn cache clean
+CMD [ "npm", "start" ]
+EXPOSE 3000
