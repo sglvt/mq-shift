@@ -47,6 +47,12 @@ p {
   color:darkslategrey;
 }
 
+li {
+  font-family: sans-serif;
+  font-size: calc(9px + 1vmin);
+  color:darkslategrey;
+}
+
 .numeric-input {
   font-family: sans-serif;
   font-size: calc(9px + 1vmin);

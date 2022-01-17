@@ -64,49 +64,54 @@ export default class FetchPage extends Component {
 
   handleAcknowledgeCheckbox(e) {
     console.log(e)
-    let ack = ! (this.state.acknowledge)
+    let ack = !(this.state.acknowledge)
     this.setState({ acknowledge: ack })
   }
 
   handleButtonClick(e) {
-    if (this.state.sourceQueueName !== '') {
-      console.log(e)
-      let config = {
-        headers: { 'Content-Type': 'multipart/form-data' }
+    if (this.state.destQueueName !== '') {
+      if (this.state.sourceQueueName !== '') {
+        console.log(e)
+        let config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        let formData = new FormData();
+        try {
+          formData.append('count', this.state.quantity)
+          formData.append('sourceQueueName', this.state.sourceQueueName)
+          formData.append('destQueueName', this.state.destQueueName)
+          let ack = (this.state.acknowledge === true) ? 'True' : 'False'
+          formData.append('acknowledge', ack)
+          this.setState({ data: [] })
+          formData.append('durable', this.state.queueAttributes[this.state.sourceQueueName]['durable'])
+          axios.post('http://localhost:8080/move-messages', formData, config)
+            .then(response => {
+              if (response.data.length === 0) {
+                this.setState({ status: `queue is empty` })
+              }
+              else {
+                this.setState({ status: `successfully retrieved ${response.data.length} messages at ${this.getTimestamp()}` })
+              }
+              this.setState({ data: response.data })
+              console.log(`this.state.data=${this.state.data}`)
+              return response;
+            }).catch(error => {
+              this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
+              console.log(error)
+              return error;
+            });
+        }
+        catch (err) {
+          console.log(err)
+          this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
+        }
       }
-      let formData = new FormData();
-      try {
-        formData.append('count', this.state.quantity)
-        formData.append('sourceQueueName', this.state.sourceQueueName)
-        formData.append('destQueueName', this.state.destQueueName)
-        let ack = (this.state.acknowledge === true)? 'True':'False'
-        formData.append('acknowledge', ack)
-        this.setState({ data: [] })
-        formData.append('durable', this.state.queueAttributes[this.state.sourceQueueName]['durable'])
-        axios.post('http://localhost:8080/move-messages', formData, config)
-          .then(response => {
-            if (response.data.length === 0) {
-              this.setState({ status: `queue is empty` })
-            }
-            else {
-              this.setState({ status: `successfully retrieved ${response.data.length} messages at ${this.getTimestamp()}` })
-            }
-            this.setState({ data: response.data })
-            console.log(`this.state.data=${this.state.data}`)
-            return response;
-          }).catch(error => {
-            this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
-            console.log(error)
-            return error;
-          });
-      }
-      catch (err) {
-        console.log(err)
-        this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
+      else {
+        this.setState({ status: `error: no source queue selected` })
       }
     }
     else {
-      this.setState({ status: `error: no queue selected` })
+      this.setState({ status: `error: no dest queue selected` })
     }
   }
 
@@ -114,7 +119,7 @@ export default class FetchPage extends Component {
     this.getOptions()
   }
 
-  
+
 
   render() {
     console.log(this.state.selectOptions)
@@ -124,11 +129,13 @@ export default class FetchPage extends Component {
           <Navbar />
         </div>
         <div style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
-          <div style={{ left: '0vmin', 
-            top: '0vmin', 
+          <div style={{
+            left: '0vmin',
+            top: '0vmin',
             backgroundColor: '#99ccff',
             fontSize: 'calc(10px + 1vmin)',
-            fontWeight: 'bold' }}>
+            fontWeight: 'bold'
+          }}>
             <table>
               <tbody>
                 <tr>
@@ -180,13 +187,13 @@ export default class FetchPage extends Component {
                     >Move</button>
                   </td>
                   <td>
-                  <input type="checkbox" name="acknowledge"
-                    checked={this.state.acknowledge}
-                    onChange={this.handleAcknowledgeCheckbox.bind(this)}
-                  />
-                  <label for="acknowledge"
+                    <input type="checkbox" name="acknowledge"
+                      checked={this.state.acknowledge}
+                      onChange={this.handleAcknowledgeCheckbox.bind(this)}
+                    />
+                    <label for="acknowledge"
                       className="regular-text"
-                  > Acknowledge</label>
+                    > Acknowledge</label>
                   </td>
                 </tr>
               </tbody>
