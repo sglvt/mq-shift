@@ -59,4 +59,5 @@ flask run -p ${FLASK_PORT}
 ## Container images
 ```
 podman build -f Dockerfile.web . -t mq-shift-web
+podman build -f Dockerfile.api . -t mq-shift-api
 ```
