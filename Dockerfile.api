@@ -1,4 +1,12 @@
-FROM python:3.9-slim-bullseye
+FROM public.ecr.aws/docker/library/python:3.9-slim-bullseye
+
+ENV MQ_TYPE=rabbitmq
+ENV MQ_HOST=127.0.0.1
+ENV MQ_PROTOCOL=amqp
+ENV MQ_PORT=5672
+ENV MQ_API_PROTOCOL=http
+ENV MQ_API_PORT=15672
+ENV FLASK_PORT=8080
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
