@@ -20,25 +20,47 @@ export default class FetchPage extends Component {
   }
 
   async getOptions() {
-    const res = await axios.get('http://localhost:8080/queue-list')
-    const data = res.data
 
-    const options = data.map(d => ({
-      "value": d.name,
-      "label": d.name
-    }))
-
-    let attributes = {}
-    console.log(data)
-    for (let k in Object.keys(data)) {
-      console.log(`${data[k]['name']} ${data[k]['durable']}`)
-      attributes[data[k]['name']] = {}
-      attributes[data[k]['name']]['durable'] = data[k]['durable']
+    let config = {
+      headers: { 'Content-Type': 'multipart/form-data' }
     }
+    let formData = new FormData();
+    try {
+      formData.append('mqUser', sessionStorage.getItem('username'))
+      formData.append('mqPassword', atob(sessionStorage.getItem('password')))
+      axios.post('http://localhost:8080/queue-list', formData, config)
+        .then(response => {
+          if (response.data.length === 0) {
+            this.setState({ status: `no queues found` })
+          }
+          const data = response.data
 
-    this.setState({ selectOptions: options })
-    this.setState({ queueAttributes: attributes })
+          const options = data.map(d => ({
+            "value": d.name,
+            "label": d.name
+          }))
 
+          let attributes = {}
+          console.log(data)
+          for (let k in Object.keys(data)) {
+            console.log(`${data[k]['name']} ${data[k]['durable']}`)
+            attributes[data[k]['name']] = {}
+            attributes[data[k]['name']]['durable'] = data[k]['durable']
+          }
+
+          this.setState({ selectOptions: options })
+          this.setState({ queueAttributes: attributes })
+          return response;
+        }).catch(error => {
+          this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
+          console.log(error)
+          return error;
+        });
+    }
+    catch (err) {
+      console.log(err)
+      this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
+    }
   }
 
   getTimestamp() {
@@ -58,7 +80,7 @@ export default class FetchPage extends Component {
 
   handleAcknowledgeCheckbox(e) {
     console.log(e)
-    let ack = ! (this.state.acknowledge)
+    let ack = !(this.state.acknowledge)
     this.setState({ acknowledge: ack })
   }
 
@@ -72,7 +94,9 @@ export default class FetchPage extends Component {
       try {
         formData.append('count', this.state.quantity)
         formData.append('queueName', this.state.queueName)
-        let ack = (this.state.acknowledge === true)? 'True':'False'
+        formData.append('mqUser', sessionStorage.getItem('username'))
+        formData.append('mqPassword', atob(sessionStorage.getItem('password')))
+        let ack = (this.state.acknowledge === true) ? 'True' : 'False'
         formData.append('acknowledge', ack)
         this.setState({ data: [] })
         formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
@@ -107,7 +131,7 @@ export default class FetchPage extends Component {
     this.getOptions()
   }
 
-  
+
 
   render() {
     console.log(this.state.selectOptions)
@@ -117,11 +141,13 @@ export default class FetchPage extends Component {
           <Navbar />
         </div>
         <div style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
-          <div style={{ left: '0vmin', 
-            top: '0vmin', 
+          <div style={{
+            left: '0vmin',
+            top: '0vmin',
             backgroundColor: '#99ccff',
             fontSize: 'calc(10px + 1vmin)',
-            fontWeight: 'bold' }}>
+            fontWeight: 'bold'
+          }}>
             <table>
               <tbody>
                 <tr>
@@ -160,13 +186,13 @@ export default class FetchPage extends Component {
                     >Fetch</button>
                   </td>
                   <td>
-                  <input type="checkbox" name="acknowledge"
-                    checked={this.state.acknowledge}
-                    onChange={this.handleAcknowledgeCheckbox.bind(this)}
-                  />
-                  <label for="acknowledge"
+                    <input type="checkbox" name="acknowledge"
+                      checked={this.state.acknowledge}
+                      onChange={this.handleAcknowledgeCheckbox.bind(this)}
+                    />
+                    <label for="acknowledge"
                       className="regular-text"
-                  > Acknowledge</label>
+                    > Acknowledge</label>
                   </td>
                 </tr>
               </tbody>

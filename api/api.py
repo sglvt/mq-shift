@@ -12,8 +12,6 @@ SUPPORTED_MQ_TYPES = {
 def init():
     global port, mqUser, mqPassword, mqHost, mqPort, mqApiPort, mqProtocol, mqApiProtocol
     mqType = os.environ.get("MQ_TYPE").lower()
-    mqUser = os.environ.get("MQ_USER")
-    mqPassword = os.environ.get("MQ_PASSWORD")
     mqHost = os.environ.get("MQ_HOST")
     mqProtocol = os.environ.get("MQ_PROTOCOL")
     mqPort = os.environ.get("MQ_PORT")
@@ -26,7 +24,7 @@ try:
     init()
     app = Flask(__name__)
     http = urllib3.PoolManager()
-    headers = urllib3.util.make_headers(basic_auth=f'{mqUser}:{mqPassword}')
+    # headers = urllib3.util.make_headers(basic_auth=f'{mqUser}:{mqPassword}')
 except:
     traceback.print_exc()
     exit(1)
@@ -40,8 +38,11 @@ def root():
     </table>
     '''
 
-@app.route('/queue-list')
+@app.route('/queue-list', methods=['POST'])
 def queueList():
+    mqUser = request.form['mqUser']
+    mqPassword = request.form['mqPassword']
+    headers = urllib3.util.make_headers(basic_auth=f'{mqUser}:{mqPassword}')
     resp = http.request('GET', f'{mqApiProtocol}://{mqHost}:{mqApiPort}/api/queues',headers=headers)
     queue_list = []
     data = json.loads(resp.data)
@@ -75,6 +76,8 @@ def insertMessage():
 
 @app.route('/get-messages', methods=['POST'])
 def getMessages():
+    mqUser = request.form['mqUser']
+    mqPassword = request.form['mqPassword']
     queueName = request.form['queueName']
     durable = request.form['durable']
     desiredCount = int(request.form['count'])
