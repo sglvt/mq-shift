@@ -1,8 +1,9 @@
 {
   "dependencies": {
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "create-react-app": "^5.0.0",
+    "react-native-keychain": "^8.0.0",
     "react-router-dom": "^6.2.1",
-    "react-select": "^5.2.1"
+    "react-select": "^5.2.2"
   }
 }

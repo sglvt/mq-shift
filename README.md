@@ -10,7 +10,11 @@ sudo npm install -g yarn
 yarn install
 sudo npm install -g yarn
 yarn set version latest
-yarn add axios react-router-dom react-select create-react-app
+yarn add axios \
+  create-react-app \
+  react-native-keychain \
+  react-router-dom \
+  react-select
 yarn create-react-app web
 ```
 
