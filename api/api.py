@@ -56,6 +56,8 @@ def queueList():
 
 @app.route('/insert-message', methods=['POST'])
 def insertMessage():
+    mqUser = request.form['mqUser']
+    mqPassword = request.form['mqPassword']
     data = request.form['message']
     queueName = request.form['queueName']
     durable = request.form['durable']
@@ -130,6 +132,8 @@ def getMessages():
 
 @app.route('/move-messages', methods=['POST'])
 def moveMessages():
+    mqUser = request.form['mqUser']
+    mqPassword = request.form['mqPassword']
     sourceQueueName = request.form['sourceQueueName']
     destQueueName = request.form['destQueueName']
     durable = request.form['durable']

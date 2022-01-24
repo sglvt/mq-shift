@@ -99,6 +99,8 @@ export default class FetchPage extends Component {
         }
         let formData = new FormData();
         try {
+          formData.append('mqUser', sessionStorage.getItem('username'))
+          formData.append('mqPassword', atob(sessionStorage.getItem('password')))
           formData.append('count', this.state.quantity)
           formData.append('sourceQueueName', this.state.sourceQueueName)
           formData.append('destQueueName', this.state.destQueueName)

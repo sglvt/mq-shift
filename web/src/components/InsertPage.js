@@ -83,6 +83,8 @@ export default class InsertPage extends Component {
       let formData = new FormData();
       let now = new Date();
       try {
+        formData.append('mqUser', sessionStorage.getItem('username'))
+        formData.append('mqPassword', atob(sessionStorage.getItem('password')))
         formData.append('message', this.state.message)
         formData.append('queueName', this.state.queueName)
         formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])

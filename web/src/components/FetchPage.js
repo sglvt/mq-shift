@@ -92,10 +92,10 @@ export default class FetchPage extends Component {
       }
       let formData = new FormData();
       try {
-        formData.append('count', this.state.quantity)
-        formData.append('queueName', this.state.queueName)
         formData.append('mqUser', sessionStorage.getItem('username'))
         formData.append('mqPassword', atob(sessionStorage.getItem('password')))
+        formData.append('count', this.state.quantity)
+        formData.append('queueName', this.state.queueName)
         let ack = (this.state.acknowledge === true) ? 'True' : 'False'
         formData.append('acknowledge', ack)
         this.setState({ data: [] })
