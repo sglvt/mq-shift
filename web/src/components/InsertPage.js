@@ -73,37 +73,50 @@ export default class InsertPage extends Component {
     this.setState({ message: e.target.value })
   }
 
+  areCredentialsSet() {
+    if (sessionStorage.getItem('username') === null) {
+      this.setState({ status: `error: credentials not set` })
+      return false
+    }
+    if (sessionStorage.getItem('password') === null) {
+      this.setState({ status: `error: credentials not set` })
+      return false
+    }
+    return true
+  }
+
   handleButtonClick(e) {
-    if (this.state.queueName !== '') {
-      console.log(e)
-      let config = {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }
-      console.log(this.state.message)
-      let formData = new FormData();
-      let now = new Date();
-      try {
-        formData.append('mqUser', sessionStorage.getItem('username'))
-        formData.append('mqPassword', atob(sessionStorage.getItem('password')))
-        formData.append('message', this.state.message)
-        formData.append('queueName', this.state.queueName)
-        formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
-        axios.post('http://localhost:8080/insert-message', formData, config)
-          .then(response => {
-            this.setState({ status: `successfully inserted at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
-            return response.data;
-          }).catch(error => {
-            return error;
-          });
-      }
-      catch (err) {
-        console.log(err)
-        this.setState({ status: `error "${err}" at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
-      }
-    }
-    else {
+    if (!this.areCredentialsSet()) return;
+    if (this.state.queueName === '') {
       this.setState({ status: `error: no queue selected` })
+      return
     }
+    console.log(e)
+    let config = {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    console.log(this.state.message)
+    let formData = new FormData();
+    let now = new Date();
+    try {
+      formData.append('mqUser', sessionStorage.getItem('username'))
+      formData.append('mqPassword', atob(sessionStorage.getItem('password')))
+      formData.append('message', this.state.message)
+      formData.append('queueName', this.state.queueName)
+      formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
+      axios.post('http://localhost:8080/insert-message', formData, config)
+        .then(response => {
+          this.setState({ status: `successfully inserted at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
+          return response.data;
+        }).catch(error => {
+          return error;
+        });
+    }
+    catch (err) {
+      console.log(err)
+      this.setState({ status: `error "${err}" at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` })
+    }
+
   }
 
   componentDidMount() {
@@ -118,11 +131,13 @@ export default class InsertPage extends Component {
           <Navbar />
         </div>
         <div style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
-          <div style={{ left: '0vmin', 
-              top: '0vmin', 
-              backgroundColor: '#99ccff',
-              fontSize: 'calc(10px + 1vmin)',
-              fontWeight: 'bold' }}>
+          <div style={{
+            left: '0vmin',
+            top: '0vmin',
+            backgroundColor: '#99ccff',
+            fontSize: 'calc(10px + 1vmin)',
+            fontWeight: 'bold'
+          }}>
             <table>
               <tbody>
                 <tr>

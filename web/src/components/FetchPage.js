@@ -20,7 +20,7 @@ export default class FetchPage extends Component {
   }
 
   async getOptions() {
-
+    if (! this.areCredentialsSet()) return;
     let config = {
       headers: { 'Content-Type': 'multipart/form-data' }
     }
@@ -84,46 +84,58 @@ export default class FetchPage extends Component {
     this.setState({ acknowledge: ack })
   }
 
-  handleButtonClick(e) {
-    if (this.state.queueName !== '') {
-      console.log(e)
-      let config = {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }
-      let formData = new FormData();
-      try {
-        formData.append('mqUser', sessionStorage.getItem('username'))
-        formData.append('mqPassword', atob(sessionStorage.getItem('password')))
-        formData.append('count', this.state.quantity)
-        formData.append('queueName', this.state.queueName)
-        let ack = (this.state.acknowledge === true) ? 'True' : 'False'
-        formData.append('acknowledge', ack)
-        this.setState({ data: [] })
-        formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
-        axios.post('http://localhost:8080/get-messages', formData, config)
-          .then(response => {
-            if (response.data.length === 0) {
-              this.setState({ status: `queue is empty` })
-            }
-            else {
-              this.setState({ status: `successfully retrieved ${response.data.length} messages at ${this.getTimestamp()}` })
-            }
-            this.setState({ data: response.data })
-            console.log(`this.state.data=${this.state.data}`)
-            return response;
-          }).catch(error => {
-            this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
-            console.log(error)
-            return error;
-          });
-      }
-      catch (err) {
-        console.log(err)
-        this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
-      }
+  areCredentialsSet() {
+    if (sessionStorage.getItem('username') === null) {
+      this.setState({ status: `error: credentials not set` })
+      return false
     }
-    else {
+    if (sessionStorage.getItem('password') === null) {
+      this.setState({ status: `error: credentials not set` })
+      return false
+    }
+    return true
+  }
+
+  handleButtonClick(e) {
+    if (! this.areCredentialsSet()) return;
+    if (this.state.queueName === '') {
       this.setState({ status: `error: no queue selected` })
+      return
+    }
+    console.log(e)
+    let config = {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    let formData = new FormData();
+    try {
+      formData.append('mqUser', sessionStorage.getItem('username'))
+      formData.append('mqPassword', atob(sessionStorage.getItem('password')))
+      formData.append('count', this.state.quantity)
+      formData.append('queueName', this.state.queueName)
+      let ack = (this.state.acknowledge === true) ? 'True' : 'False'
+      formData.append('acknowledge', ack)
+      this.setState({ data: [] })
+      formData.append('durable', this.state.queueAttributes[this.state.queueName]['durable'])
+      axios.post('http://localhost:8080/get-messages', formData, config)
+        .then(response => {
+          if (response.data.length === 0) {
+            this.setState({ status: `queue is empty` })
+          }
+          else {
+            this.setState({ status: `successfully retrieved ${response.data.length} messages at ${this.getTimestamp()}` })
+          }
+          this.setState({ data: response.data })
+          console.log(`this.state.data=${this.state.data}`)
+          return response;
+        }).catch(error => {
+          this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
+          console.log(error)
+          return error;
+        });
+    }
+    catch (err) {
+      console.log(err)
+      this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
     }
   }
 
