@@ -4,6 +4,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import Navbar from './Navbar';
 import './page.css';
+import Common from './Common.js';
 
 export default class FetchPage extends Component {
 
@@ -21,52 +22,8 @@ export default class FetchPage extends Component {
   }
 
   async getOptions() {
-
-    let config = {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    }
-    let formData = new FormData();
-    try {
-      formData.append('mqUser', sessionStorage.getItem('username'))
-      formData.append('mqPassword', atob(sessionStorage.getItem('password')))
-      axios.post('http://localhost:8080/queue-list', formData, config)
-        .then(response => {
-          if (response.data.length === 0) {
-            this.setState({ status: `no queues found` })
-          }
-          const data = response.data
-
-          const options = data.map(d => ({
-            "value": d.name,
-            "label": d.name
-          }))
-
-          let attributes = {}
-          console.log(data)
-          for (let k in Object.keys(data)) {
-            console.log(`${data[k]['name']} ${data[k]['durable']}`)
-            attributes[data[k]['name']] = {}
-            attributes[data[k]['name']]['durable'] = data[k]['durable']
-          }
-
-          this.setState({ selectOptions: options })
-          this.setState({ queueAttributes: attributes })
-          return response;
-        }).catch(error => {
-          this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
-          console.log(error)
-          return error;
-        });
-    }
-    catch (err) {
-      console.log(err)
-      this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
-    }
-  }
-
-  getTimestamp() {
-    let now = new Date();
-    return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+    if (! Common.areCredentialsSet(this)) return;
+    Common.getOptions(this);
   }
 
   handleSourceQueueChange(e) {
@@ -90,22 +47,10 @@ export default class FetchPage extends Component {
     this.setState({ acknowledge: ack })
   }
 
-  areCredentialsSet() {
-    if (sessionStorage.getItem('username') === null) {
-      this.setState({ status: `error: credentials not set` })
-      return false
-    }
-    if (sessionStorage.getItem('password') === null) {
-      this.setState({ status: `error: credentials not set` })
-      return false
-    }
-    return true
-  }
-
   handleButtonClick(e) {
     // if (this.state.destQueueName !== '') {
     //   if (this.state.sourceQueueName !== '') {
-    if (!this.areCredentialsSet()) return;
+    if (!Common.areCredentialsSet(this)) return;
     if (this.state.destQueueName === '') {
       this.setState({ status: `error: no destination queue selected` })
       return
@@ -135,28 +80,26 @@ export default class FetchPage extends Component {
             this.setState({ status: `queue is empty` })
           }
           else {
-            this.setState({ status: `successfully retrieved ${response.data.length} messages at ${this.getTimestamp()}` })
+            this.setState({ status: `successfully retrieved ${response.data.length} messages at ${Common.getTimestamp()}` })
           }
           this.setState({ data: response.data })
           console.log(`this.state.data=${this.state.data}`)
           return response;
         }).catch(error => {
-          this.setState({ status: `error "${error}" at ${this.getTimestamp()}` })
+          this.setState({ status: `error "${error}" at ${Common.getTimestamp()}` })
           console.log(error)
           return error;
         });
     }
     catch (err) {
       console.log(err)
-      this.setState({ status: `error "${err}" at ${this.getTimestamp()}` })
+      this.setState({ status: `error "${err}" at ${Common.getTimestamp()}` })
     }
   }
 
   componentDidMount() {
     this.getOptions()
   }
-
-
 
   render() {
     console.log(this.state.selectOptions)

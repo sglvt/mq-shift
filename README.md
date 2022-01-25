@@ -14,7 +14,8 @@ yarn add axios \
   create-react-app \
   react-native-keychain \
   react-router-dom \
-  react-select
+  react-select \
+  react-table
 yarn create-react-app web
 ```
 
