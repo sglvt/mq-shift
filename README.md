@@ -1,5 +1,7 @@
 # mq-shift
 
+React front-end and Python API which enable interracting with a a message queue (only RabbitMQ implemented) in order to view, acknowledge or move messages to another queue.
+
 ## Development
 ### Web app
 #### Prerequisites
